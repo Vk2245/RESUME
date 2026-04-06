@@ -404,4 +404,24 @@ async function downloadPDF() {
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       doc.addPage();
-      doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefin
+      doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      heightLeft -= pageHeight;
+    }
+ 
+    doc.save('Vishal_Kumar_DataScientist.pdf');
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    alert('PDF generate nahi ho saka. Browser print (Ctrl+P) use karke "Save as PDF" try karein.');
+  } finally {
+    button.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF';
+    button.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
+ 
+
+
+
+
