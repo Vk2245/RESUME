@@ -164,7 +164,7 @@ body{font-family:var(--font);font-size:var(--font-base);line-height:1.44;color:v
   </div>
   <div class="hdr-right">
     <div class="contact-row"><i class="fas fa-phone"></i><span>+91-8374085156</span></div>
-    <div class="contact-row"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection#66100d5454520900000f050f070a26010b070f0a4805090b"><span class="__cf_email__" data-cfemail="88fee3bababce7eeeee1ebe1e9e4c8efe5e9e1e4a6ebe7e5">[email&#160;protected]</span></a></div>
+    <div class="contact-row"><i class="fas fa-envelope"></i><a href="mailto:vishalkumar224522@gmail.com">vishalkumar224522@gmail.com</a></div>
     <div class="contact-row"><i class="fab fa-github"></i><a href="https://github.com/Vk2245" target="_blank">github.com/Vk2245</a></div>
     <div class="contact-row"><i class="fab fa-linkedin-in"></i><a href="https://www.linkedin.com/in/vishal-kumar-7a74462a0/" target="_blank">linkedin.com/in/vishal-kumar-7a74462a0</a></div>
   </div>
@@ -383,34 +383,69 @@ body{font-family:var(--font);font-size:var(--font-base);line-height:1.44;color:v
 </div><!-- /resume -->
 </div><!-- /page-wrapper -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+<script>
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
   const element = document.getElementById('resumeContent');
   const button = document.getElementById('pdfBtn');
+
   button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
   button.disabled = true;
+
   try {
-    const canvas = await html2canvas(element, { scale: 2.5, useCORS: true, backgroundColor: '#ffffff', windowHeight: element.scrollHeight, logging: false });
-    const imgData = canvas.toDataURL('image/jpeg', 0.85);
+    // Hide toolbar so it doesn't appear in PDF
+    const toolbar = document.querySelector('.toolbar');
+    toolbar.style.display = 'none';
+
+    const canvas = await html2canvas(element, {
+      scale: 2.5,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+      logging: false
+    });
+
+    // Restore toolbar
+    toolbar.style.display = '';
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.90);
     const imgWidth = 210;
     const pageHeight = 297;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true
+    });
+
     let heightLeft = imgHeight;
     let position = 0;
+
+    // First page
     doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
     heightLeft -= pageHeight;
+
+    // Additional pages if needed
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       doc.addPage();
       doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
     }
- 
+
     doc.save('Vishal_Kumar_DataScientist.pdf');
+
   } catch (err) {
     console.error('PDF generation failed:', err);
+    const toolbar = document.querySelector('.toolbar');
+    if (toolbar) toolbar.style.display = '';
     alert('PDF generate nahi ho saka. Browser print (Ctrl+P) use karke "Save as PDF" try karein.');
   } finally {
     button.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF';
@@ -420,8 +455,3 @@ async function downloadPDF() {
 </script>
 </body>
 </html>
- 
-
-
-
-
